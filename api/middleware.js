@@ -1,3 +1,9 @@
+const jwt = require("jsonwebtoken");
+const errors = require("restify-errors");
+
+const JWT_SECRET = CONFIG.AUTHJWT.secret || process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = CONFIG.expires || "6h";
+
 /*
  * All Additional Middlewares are defined here
  * They are loaded before routes are processed
@@ -50,3 +56,40 @@ module.exports = function(server, restify) {
         next();
     });
 }
+
+
+module.exports = {
+    verifyToken: function (req, res, next) {
+        const token = req.header("authorization");
+
+        if (!token) {
+            return next(new errors.UnauthorizedError("Token missing"));
+        }
+
+        try {
+          
+            
+            const decoded = jwt.verify(token, CONFIG.AUTHJWT.secret);
+            req.user = decoded // attach user data
+
+            //console.log({req});
+            
+            return next();
+        } catch (err) {
+            return next(new errors.UnauthorizedError("Invalid or expired token"));
+        }
+    },
+
+    isAdmin: function (req, res, next) {
+        if (!req.user) {
+            return next(new errors.UnauthorizedError("Unauthorized"));
+        }
+
+        if (req.user.role !== "admin") {
+            return next(new errors.ForbiddenError("Admin access required"));
+        }
+
+        return next();
+    }
+};
+

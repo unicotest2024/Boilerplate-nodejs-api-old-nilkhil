@@ -1,8 +1,7 @@
-// controllers/authController.js
-//const bcrypt = require("bcryptjs");
+
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = CONFIG.AUTHJWT.secret || process.env.JWT_SECRET;
+//const JWT_SECRET = CONFIG.AUTHJWT.secret || process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = CONFIG.expires || "6h";
 
 
@@ -63,7 +62,7 @@ module.exports = {
                     role: user.role
                 };
 
-                const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+                const token = jwt.sign(tokenPayload, CONFIG.AUTHJWT.secret, { expiresIn: JWT_EXPIRES_IN });
 
                 const safeUser = {
                     id: user.id,

@@ -45,6 +45,8 @@ global._ENV = {};
 global.CLSINDEX = {"CONTROLLERS":[]};
 // server.js (or wherever you initialize the app)
 
+global.middlware = require('./api/middleware.js')
+
 
 
 console.log("\x1b[31m%s\x1b[0m","\nAPI Engine Initialization Started");
@@ -68,7 +70,9 @@ server.env = env;
 
 require('./api/misc')(server, restify);
 require('./api/plugins')(server, restify);
-require('./api/middleware')(server, restify);
+//require('./api/middleware')(server, restify);
+
+
 
 require('./api/security')(server, restify);
 require('./api/routes')(server, restify); // Load Basic System Routes
