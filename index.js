@@ -43,6 +43,9 @@ config.ROOT_PATH  = __dirname;//path.dirname();
 global.CONFIG = config;
 global._ENV = {};
 global.CLSINDEX = {"CONTROLLERS":[]};
+// server.js (or wherever you initialize the app)
+
+
 
 console.log("\x1b[31m%s\x1b[0m","\nAPI Engine Initialization Started");
 

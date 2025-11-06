@@ -23,6 +23,7 @@
     "homepage": "https://github.com/bismay4u/Boilerplate-nodejs-api#readme",
     "dependencies": {
         "axios": "^0.21.2",
+        "bcryptjs": "^3.0.3",
         "bunyan-rotating-file-stream": "^1.6.3",
         "crypto": "^1.0.1",
         "csv-parse": ">=4.4.6",
