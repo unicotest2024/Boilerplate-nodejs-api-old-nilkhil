@@ -12,8 +12,8 @@ module.exports = {
             blocked: "false",
             created_by: req.created_by || null,
             updated_by: req.created_by || null,
-            created_at: new Date(),
-            updated_at: new Date()
+            created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+            updated_at: moment().format("YYYY-MM-DD HH:mm:ss")
         };
 
         //Insert into DB using helper
@@ -91,15 +91,12 @@ module.exports = {
                         where,
                         whereParams,
                         function (results) {
-                            // console.log({ results });
 
                             return callback({
-                                status: true,
-                                msg: "Books fetched successfully",
                                 page: page,
                                 limit: limit,
                                 total: totalBooks,
-                                data: results || []
+                                item: results || []
                             });
                         },
                         extraQuery
@@ -111,19 +108,19 @@ module.exports = {
         } catch (err) {
             console.log("List Books Error:", err);
             return callback({
-                status: false,
+                status: "error",
                 msg: "Internal Server Error"
             });
         }
     },
 
-    getBook: function (req, callback) {
+    getBook: function (bookId, callback) {
         try {
-            const bookId = req.params.id;
+            ;
 
             if (!bookId || isNaN(bookId)) {
                 return callback({
-                    status: false,
+                    status: "error",
                     msg: "Invalid book ID"
                 });
             }
@@ -157,19 +154,19 @@ module.exports = {
                     }
 
                     return callback({
-                        status: true,
-                        msg: "Book fetched successfully",
+
                         data: result[0]
                     });
                 },
-                "" // no extra query
+                ""
             );
 
         } catch (err) {
             console.log("Get Book Error:", err);
             return callback({
-                status: false,
-                msg: "Internal Server Error"
+                status: "error",
+                msg: "Internal Server Error",
+                error:err
             });
         }
     },
@@ -180,7 +177,7 @@ updateBookById: function (req, callback) {
 
     if (!bookId) {
         return callback({
-            status: false,
+            status: "error",
             msg: "Book ID is required"
         });
     }
@@ -197,12 +194,12 @@ updateBookById: function (req, callback) {
     data.updated_by = req.updated_by || null;
     data.updated_at = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    console.log(data);
+    //console.log(data);
     
 
     if (Object.keys(data).length === 0) {
         return callback({
-            status: false,
+            status: "error",
             msg: "No fields to update"
         });
     }
@@ -214,14 +211,14 @@ updateBookById: function (req, callback) {
         function (results) {
             if (!results) {
                 return callback({
-                    status: false,
+                    status: "error",
                     msg: "Failed to update book"
                 });
             }
 
             return callback({
-                status: true,
-                msg: "Book updated successfully"
+                status: "su",
+                
             });
         }
     );

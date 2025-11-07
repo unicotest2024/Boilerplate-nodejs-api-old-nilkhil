@@ -1,12 +1,12 @@
-const middleware = require("../middleware");
+
 
 module.exports = function (server, restify) {
 
     // Add Book
     server.post('/books/add',
 
-    middleware.verifyToken,        // first check token
-    middleware.isAdmin,            // check admin only
+    global.middleware.verifyToken,        // first check token
+    global.middleware.isAdmin,            // check admin only
 
     (req, res, next) => {
 
@@ -31,8 +31,10 @@ module.exports = function (server, restify) {
 
         //Pass only after validation succeeds
         BOOKCONTROLLER.addBook(req.body, function (response) {
-            const status = response.status ? 200 : 401;
-            res.send(status, response);
+           
+            res.send({"status": "success",
+            "msg": "Book added",
+            "data": response});
             next();
         });
 
@@ -42,7 +44,7 @@ module.exports = function (server, restify) {
 
     server.get('/books/list',
 
-        middleware.verifyToken,        // first check token
+        global.middleware.verifyToken,        // first check token
 
         (req, res, next) => {
 
@@ -55,9 +57,10 @@ module.exports = function (server, restify) {
         const validation = validateRule(req.query, rules);
 
         if (!validation.status) {
-            return res.send(400, {
-                status: false,
-                errors: validation.errors
+            return res.send( {
+                "status": "error",
+                "errors": validation.errors,
+                "msg": "Input Validation Failed"
             });
         }
 
@@ -66,9 +69,12 @@ module.exports = function (server, restify) {
 
             BOOKCONTROLLER.listBooks(req, function (response) {
 
-                const status = response.status ? 200 : 401;
 
-                res.send(status, response);
+                res.send({
+                    "status":"success",
+                    "msg":"list of book",
+                    "data":response
+                });
                 next();
             });
 
@@ -76,20 +82,18 @@ module.exports = function (server, restify) {
 
     server.get(
         '/books/:id',
-        middleware.verifyToken,        // first check token
+        global.middleware.verifyToken,        // first check token
         (req, res, next) => {
 
-            BOOKCONTROLLER.getBook(req, function (response) {
+            const bookId = req.params.id
 
-                const status = response.status ? 200 : 401;
+            BOOKCONTROLLER.getBook(bookId, function (response) {
 
-                console.log({response});
-
-                console.log({status});
-                
-                
-
-                res.send(status, response);
+                res.send({
+                    "status":"success",
+                    "msg":"Book fetched successfully",
+                    "data":response
+                });
                 next();
             })
         }  //then go to controller
@@ -98,8 +102,8 @@ module.exports = function (server, restify) {
     //api/books/:id | PUT | Update book info | Admin |
 
     server.put('/books/:id',
-        middleware.verifyToken,
-        middleware.isAdmin,
+        global.middleware.verifyToken,
+        global.middleware.isAdmin,
 
         (req, res, next ) =>{
 
@@ -113,9 +117,10 @@ module.exports = function (server, restify) {
         const validation = validateRule(req.body, rules);
 
         if (!validation.status) {
-            return res.send(400, {
-                status: false,
-                errors: validation.errors
+            return res.send({
+                "status": "error",
+                "errors": validation.errors,
+                "msg": "Input Validation Failed"
             });
         }
 
@@ -123,14 +128,18 @@ module.exports = function (server, restify) {
         
         req.body.updated_by = req.user.id;   
 
-        console.log(req.body);
+        //console.log(req.body);
         
 
             BOOKCONTROLLER.updateBookById(req, function (reponse){
                 
-                const status = reponse.status ? 200 : 401;
+                 
 
-                res.send(status,reponse)
+                res.send({
+                    "status":"success",
+                    "msg":"Book updated successfully",
+                    "data":reponse
+                })
 
                 next()
             })
